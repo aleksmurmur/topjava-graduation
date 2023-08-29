@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.InitBinder;
 import ru.javaops.bootjava.repository.model.User;
 import ru.javaops.bootjava.repository.UserRepository;
 
+import java.util.UUID;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 public abstract class AbstractUserController {
@@ -23,12 +25,12 @@ public abstract class AbstractUserController {
         binder.addValidators(emailValidator);
     }
 
-    public User get(int id) {
+    public User get(UUID id) {
         log.info("get {}", id);
         return repository.getExisted(id);
     }
 
-    public void delete(int id) {
+    public void delete(UUID id) {
         log.info("delete {}", id);
         repository.deleteExisted(id);
     }

@@ -10,6 +10,8 @@ import ru.javaops.bootjava.HasIdAndEmail;
 import ru.javaops.bootjava.repository.UserRepository;
 import ru.javaops.bootjava.web.AuthUser;
 
+import java.util.UUID;
+
 @Component
 @AllArgsConstructor
 public class UniqueMailValidator implements org.springframework.validation.Validator {
@@ -30,7 +32,7 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
             repository.findByEmailIgnoreCase(user.getEmail())
                     .ifPresent(dbUser -> {
                         if (request.getMethod().equals("PUT")) {  // UPDATE
-                            int dbId = dbUser.id();
+                            UUID dbId = dbUser.id();
 
                             // it is ok, if update ourselves
                             if (user.getId() != null && dbId == user.id()) return;

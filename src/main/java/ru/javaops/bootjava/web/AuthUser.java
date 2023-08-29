@@ -7,6 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import ru.javaops.bootjava.repository.model.Role;
 import ru.javaops.bootjava.repository.model.User;
 
+import java.util.UUID;
+
 import static java.util.Objects.requireNonNull;
 
 @Getter
@@ -19,7 +21,7 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
         this.user = user;
     }
 
-    public int id() {
+    public UUID id() {
         return user.id();
     }
 
@@ -39,7 +41,7 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
         return get().getUser();
     }
 
-    public static int authId() {
+    public static UUID authId() {
         return get().id();
     }
 

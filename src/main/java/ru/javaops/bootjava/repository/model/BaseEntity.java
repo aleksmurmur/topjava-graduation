@@ -3,10 +3,14 @@ package ru.javaops.bootjava.repository.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
 import ru.javaops.bootjava.HasId;
+
+import java.util.UUID;
 
 @MappedSuperclass
 //  https://stackoverflow.com/a/6084701/548473
@@ -15,15 +19,16 @@ import ru.javaops.bootjava.HasId;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class BaseEntity implements Persistable<Integer>, HasId {
+public abstract class BaseEntity implements Persistable<UUID>, HasId {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    @GeneratedValue(generator = "uuid-gen")
     @Schema(accessMode = Schema.AccessMode.READ_ONLY) // https://stackoverflow.com/a/28025008/548473
-    protected Integer id;
+    protected UUID id;
 
     // doesn't work for hibernate lazy proxy
-    public int id() {
+    public UUID id() {
         Assert.notNull(id, "Entity must have id");
         return id;
     }
@@ -49,7 +54,7 @@ public abstract class BaseEntity implements Persistable<Integer>, HasId {
 
     @Override
     public int hashCode() {
-        return id == null ? 0 : id;
+        return id == null ? 0 : id.hashCode();
     }
 
     @Override

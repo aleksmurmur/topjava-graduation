@@ -13,6 +13,8 @@ import ru.javaops.bootjava.util.JsonUtil;
 import ru.javaops.bootjava.util.UserUtil;
 import ru.javaops.bootjava.web.AbstractControllerTest;
 
+import java.util.UUID;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -59,7 +61,7 @@ class ProfileControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated());
 
         User created = USER_MATCHER.readFromJson(action);
-        int newId = created.id();
+        UUID newId = created.id();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(userRepository.getExisted(newId), newUser);

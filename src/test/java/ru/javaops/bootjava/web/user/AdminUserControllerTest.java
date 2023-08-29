@@ -13,6 +13,8 @@ import ru.javaops.bootjava.repository.model.User;
 import ru.javaops.bootjava.repository.UserRepository;
 import ru.javaops.bootjava.web.AbstractControllerTest;
 
+import java.util.UUID;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -59,10 +61,11 @@ class AdminUserControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + USER_ID))
+        User created = userRepository.save(user);
+        perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + created.id()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertFalse(userRepository.findById(USER_ID).isPresent());
+        assertFalse(userRepository.existsById(created.id()));
     }
 
     @Test
@@ -121,7 +124,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated());
 
         User created = USER_MATCHER.readFromJson(action);
-        int newId = created.id();
+        UUID newId = created.id();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(userRepository.getExisted(newId), newUser);
