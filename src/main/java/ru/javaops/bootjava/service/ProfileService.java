@@ -15,8 +15,8 @@ import java.util.Set;
 @Service
 @Slf4j
 public class ProfileService extends AbstractUserService {
-    public ProfileService(UserRepository repository, UniqueMailValidator emailValidator) {
-        super(repository, emailValidator);
+    public ProfileService(UserRepository repository) {
+        super(repository);
     }
 
     public UserResponse getCurrent(AuthUser authUser) {

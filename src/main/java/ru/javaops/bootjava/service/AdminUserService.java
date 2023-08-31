@@ -17,8 +17,8 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class AdminUserService extends AbstractUserService {
-    public AdminUserService(UserRepository repository, UniqueMailValidator emailValidator) {
-        super(repository, emailValidator);
+    public AdminUserService(UserRepository repository) {
+        super(repository);
     }
 
     public List<UserResponse> findAll() {
