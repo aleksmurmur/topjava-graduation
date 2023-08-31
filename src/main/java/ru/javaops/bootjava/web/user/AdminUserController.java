@@ -1,77 +1,73 @@
 package ru.javaops.bootjava.web.user;
 
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.javaops.bootjava.repository.model.User;
+import ru.javaops.bootjava.service.AdminUserService;
+import ru.javaops.bootjava.to.UserCreateOrUpdateRequest;
+import ru.javaops.bootjava.to.UserResponse;
 import ru.javaops.bootjava.util.WebUtil;
 
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.javaops.bootjava.util.validation.ValidationUtil.assureIdConsistent;
-import static ru.javaops.bootjava.util.validation.ValidationUtil.checkNew;
-
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminUserController extends AbstractUserController {
-
+public class AdminUserController {
     static final String REST_URL = "/api/admin/users";
 
-    @Override
-    @GetMapping("/{id}")
-    public User get(@PathVariable UUID id) {
-        return super.get(id);
+    private final AdminUserService service;
+    private final UniqueMailValidator emailValidator;
+    public AdminUserController(AdminUserService service, UniqueMailValidator emailValidator) {
+        this.service = service;
+        this.emailValidator = emailValidator;
     }
 
-    @Override
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(emailValidator);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> get(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.get(id));
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
-        super.delete(id);
+        service.delete(id);
     }
 
     @GetMapping
-    public List<User> getAll() {
-        log.info("getAll");
-        return repository.findAll(Sort.by(Sort.Direction.ASC, "name", "email"));
+    public ResponseEntity<List<UserResponse>> getAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user) {
-        log.info("create {}", user);
-        checkNew(user);
-        User created = repository.prepareAndSave(user);
-        URI uri = WebUtil.getEntityUri(created.getId());
-        return ResponseEntity.created(uri).body(created);
+    public ResponseEntity<UserResponse> createWithLocation(@Valid @RequestBody UserCreateOrUpdateRequest request) {
+        UserResponse response = service.create(request);
+        URI uri = WebUtil.getEntityUri(response.id());
+        return ResponseEntity.created(uri).body(response);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody User user, @PathVariable UUID id) {
-        log.info("update {} with id={}", user, id);
-        assureIdConsistent(user, id);
-        repository.prepareAndSave(user);
+    public ResponseEntity<UserResponse> update(@Valid @RequestBody UserCreateOrUpdateRequest request, @PathVariable UUID id) {
+        return ResponseEntity.ok(service.update(request, id));
     }
 
     @GetMapping("/by-email")
-    public User getByEmail(@RequestParam String email) {
-        log.info("getByEmail {}", email);
-        return repository.getExistedByEmail(email);
+    public ResponseEntity<UserResponse> getByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(service.getByEmail(email));
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Transactional
     public void enable(@PathVariable UUID id, @RequestParam boolean enabled) {
-        log.info(enabled ? "enable {}" : "disable {}", id);
-        User user = repository.getExisted(id);
-        user.setEnabled(enabled);
+        service.enable(id, enabled);
     }
 }

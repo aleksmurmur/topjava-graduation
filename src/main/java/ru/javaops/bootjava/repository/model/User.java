@@ -62,8 +62,8 @@ public class User extends NamedEntity implements HasIdAndEmail {
         this(u.id, u.name, u.email, u.password, u.enabled, u.registered, u.roles);
     }
 
-    public User(UUID id, String name, String email, String password, Role... roles) {
-        this(id, name, email, password, true, new Date(), Arrays.asList(roles));
+    public User(UUID id, String name, String email, String password, Set<Role> roles) {
+        this(id, name, email, password, true, new Date(), roles);
     }
 
     public User(UUID id, String name, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {

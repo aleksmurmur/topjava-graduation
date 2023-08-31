@@ -1,60 +1,64 @@
 package ru.javaops.bootjava.web.user;
 
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.javaops.bootjava.repository.model.User;
-import ru.javaops.bootjava.to.UserTo;
-import ru.javaops.bootjava.util.UserUtil;
+import ru.javaops.bootjava.service.ProfileService;
+import ru.javaops.bootjava.to.UserCreateOrUpdateRequest;
+import ru.javaops.bootjava.to.UserResponse;
+import ru.javaops.bootjava.util.WebUtil;
 import ru.javaops.bootjava.web.AuthUser;
 
 import java.net.URI;
 
-import static ru.javaops.bootjava.util.validation.ValidationUtil.assureIdConsistent;
-import static ru.javaops.bootjava.util.validation.ValidationUtil.checkNew;
+
 
 @RestController
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-@Slf4j
-public class ProfileController extends AbstractUserController {
+public class ProfileController {
     static final String REST_URL = "/api/profile";
 
+    private final ProfileService service;
+    private final UniqueMailValidator emailValidator;
+    public ProfileController(ProfileService service, UniqueMailValidator emailValidator) {
+        this.service = service;
+        this.emailValidator = emailValidator;
+    }
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(emailValidator);
+    }
+
     @GetMapping
-    public User get(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("get {}", authUser);
-        return authUser.getUser();
+    public ResponseEntity<UserResponse> get(@AuthenticationPrincipal AuthUser authUser) {
+        return ResponseEntity.ok(service.getCurrent(authUser));
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
-        super.delete(authUser.id());
+        service.delete(authUser.id());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
-        log.info("register {}", userTo);
-        checkNew(userTo);
-        User created = repository.prepareAndSave(UserUtil.createNewFromTo(userTo));
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL).build().toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserCreateOrUpdateRequest request) {
+        UserResponse response = service.register(request);
+        URI uriOfNewResource = WebUtil.getEntityUri(response.id());
+        return ResponseEntity.created(uriOfNewResource).body(response);
     }
 
+
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("update {} with id={}", userTo, authUser.id());
-        assureIdConsistent(userTo, authUser.id());
-        User user = authUser.getUser();
-        repository.prepareAndSave(UserUtil.updateFromTo(user, userTo));
+    public ResponseEntity<UserResponse> update(@RequestBody @Valid UserCreateOrUpdateRequest request, @AuthenticationPrincipal AuthUser authUser) {
+        UserResponse response = service.update(request, authUser);
+        return ResponseEntity.ok(response);
     }
 }

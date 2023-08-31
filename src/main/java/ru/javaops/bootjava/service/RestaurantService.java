@@ -2,7 +2,6 @@ package ru.javaops.bootjava.service;
 
 import org.slf4j.Logger;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.javaops.bootjava.repository.RestaurantRepository;
@@ -28,7 +27,8 @@ public class RestaurantService {
     }
 
     public RestaurantResponse get(@PathVariable UUID id) {
-        Restaurant restaurant = repository.getExisted(id);
+        log.info("get {}", id);
+        Restaurant restaurant = repository.findByIdOrThrow(id);
         return toResponse(restaurant);
     }
 
@@ -52,7 +52,7 @@ public class RestaurantService {
     public RestaurantResponse update(RestaurantCreateOrUpdateRequest request, UUID id) {
         log.info("update {} with id={}", request, id);
 
-        Restaurant restaurant = repository.getExisted(id);
+        Restaurant restaurant = repository.findByIdOrThrow(id);
         Restaurant updated = repository.save(updateEntity(restaurant, request));
         return toResponse(updated);
     }

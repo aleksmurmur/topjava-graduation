@@ -3,18 +3,10 @@ package ru.javaops.bootjava.web.restaurant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.javaops.bootjava.api.Path;
-import ru.javaops.bootjava.api.Paths;
-import ru.javaops.bootjava.repository.RestaurantRepository;
-import ru.javaops.bootjava.repository.model.Restaurant;
-import ru.javaops.bootjava.repository.model.User;
 import ru.javaops.bootjava.service.RestaurantService;
 import ru.javaops.bootjava.to.RestaurantCreateOrUpdateRequest;
 import ru.javaops.bootjava.to.RestaurantResponse;
@@ -24,10 +16,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import static org.slf4j.LoggerFactory.getLogger;
-import static ru.javaops.bootjava.util.validation.ValidationUtil.assureIdConsistent;
-import static ru.javaops.bootjava.util.validation.ValidationUtil.checkNew;
-
 @Tag(name = "Рестораны")
 @RestController
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,9 +23,7 @@ public class RestaurantController {
 
     static final String REST_URL = "/api/admin/restaurants";
 
-    private final Logger log = getLogger(getClass());
-
-    private RestaurantService service;
+    private final RestaurantService service;
 
     public RestaurantController(RestaurantService service) {
         this.service = service;
