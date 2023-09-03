@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,7 +32,6 @@ public class SecurityConfig {
     public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private final UserRepository userRepository;
-    private final RestAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -48,14 +48,11 @@ public class SecurityConfig {
         };
     }
 
-    //  https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter#configuring-websecurity
-    //  https://stackoverflow.com/a/61147599/548473
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers("/", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**");
     }
 
-    //https://stackoverflow.com/a/76538979/548473
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.securityMatcher("/api/**").authorizeHttpRequests(authz -> authz

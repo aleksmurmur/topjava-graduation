@@ -28,15 +28,13 @@ public record UserCreateOrUpdateRequest(
         String password,
 
         Set<Role> roles
+
 ) {
         public UserCreateOrUpdateRequest(String name, String email, String password) {
                 this(name, email, password, Set.of(Role.USER));
         }
 
-        public UserCreateOrUpdateRequest {
-                roles = Set.of(Role.USER);
-        }
         public User toEntity(Set<Role> roles) {
-                return new User(null, name(), email().toLowerCase(), PASSWORD_ENCODER.encode(password()), roles);
+                return new User(name(), email().toLowerCase(), PASSWORD_ENCODER.encode(password()), roles.isEmpty() ? Set.of(Role.USER) : roles);
         }
 }

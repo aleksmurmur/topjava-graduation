@@ -1,5 +1,8 @@
 package ru.javaops.bootjava.to;
 
+import ru.javaops.bootjava.repository.model.Role;
+
+import java.util.Set;
 import java.util.UUID;
 
 public record UserResponse(
@@ -8,7 +11,9 @@ public record UserResponse(
 
         String name,
 
-        String email
+        String email,
+
+        Set<Role> roles
 ) {
 
 }

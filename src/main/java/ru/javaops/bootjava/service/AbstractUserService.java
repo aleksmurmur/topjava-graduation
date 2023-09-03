@@ -39,7 +39,7 @@ public abstract class AbstractUserService {
     }
 
     protected UserResponse toResponse(User user) {
-        return new UserResponse(user.id(), user.getName(), user.getEmail());
+        return new UserResponse(user.id(), user.getName(), user.getEmail(), user.getRoles());
     }
 
     protected User update(User user, UserCreateOrUpdateRequest request, Set<Role> roles) {

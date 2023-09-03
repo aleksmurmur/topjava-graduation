@@ -33,13 +33,11 @@ public class AppConfig {
     }
 
 
-        //   https://stackoverflow.com/a/74630129/548473
         @JsonAutoDetect(fieldVisibility = NONE, getterVisibility = ANY)
         interface MixIn {
             @JsonAnyGetter
             Map<String, Object> getProperties();
         }
-
 
         @Autowired
         void configureAndStoreObjectMapper(ObjectMapper objectMapper) {

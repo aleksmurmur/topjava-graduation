@@ -1,1 +1,9 @@
-spring.cache.type: none
+spring:
+  cache:
+    type: none
+  sql:
+    init:
+      mode: never
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop

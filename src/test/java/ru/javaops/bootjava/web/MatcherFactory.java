@@ -6,8 +6,12 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javaops.bootjava.util.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,48 +23,50 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class MatcherFactory {
 
-    public static <T> Matcher<T> usingAssertions(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
-        return new Matcher<>(clazz, assertion, iterableAssertion);
+    public static <T, S> Matcher<T, S> usingAssertions(Class<T> clazz, Class<S> dto, BiConsumer<S, T> assertion, BiConsumer<Iterable<S>, Iterable<T>> iterableAssertion) {
+        return new Matcher<>(clazz, dto, assertion, iterableAssertion);
     }
 
-    public static <T> Matcher<T> usingEqualsComparator(Class<T> clazz) {
-        return usingAssertions(clazz,
+    public static <T, S> Matcher<T, S> usingEqualsComparator(Class<T> clazz, Class<S> dto) {
+        return usingAssertions(clazz, dto,
                 (a, e) -> assertThat(a).isEqualTo(e),
                 (a, e) -> assertThat(a).isEqualTo(e));
     }
 
-    public static <T> Matcher<T> usingIgnoringFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
-        return usingAssertions(clazz,
+    public static <T, S> Matcher<T, S> usingIgnoringFieldsComparator(Class<T> clazz, Class<S> dto, String... fieldsToIgnore) {
+        return usingAssertions(clazz, dto,
                 (a, e) -> assertThat(a).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(e),
                 (a, e) -> assertThat(a).usingRecursiveFieldByFieldElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(e));
     }
 
-    public static class Matcher<T> {
+    public static class Matcher<T, S> {
         private final Class<T> clazz;
-        private final BiConsumer<T, T> assertion;
-        private final BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion;
+        private final Class<S> dto;
+        private final BiConsumer<S, T> assertion;
+        private final BiConsumer<Iterable<S>, Iterable<T>> iterableAssertion;
 
-        private Matcher(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
+        private Matcher(Class<T> clazz, Class<S> dto, BiConsumer<S, T> assertion, BiConsumer<Iterable<S>, Iterable<T>> iterableAssertion) {
             this.clazz = clazz;
+            this.dto = dto;
             this.assertion = assertion;
             this.iterableAssertion = iterableAssertion;
         }
 
-        public void assertMatch(T actual, T expected) {
+        public void assertMatch(S actual, T expected) {
             assertion.accept(actual, expected);
         }
 
         @SafeVarargs
-        public final void assertMatch(Iterable<T> actual, T... expected) {
+        public final void assertMatch(Iterable<S> actual, T... expected) {
             assertMatch(actual, List.of(expected));
         }
 
-        public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
+        public void assertMatch(Iterable<S> actual, Iterable<T> expected) {
             iterableAssertion.accept(actual, expected);
         }
 
         public ResultMatcher contentJson(T expected) {
-            return result -> assertMatch(JsonUtil.readValue(getContent(result), clazz), expected);
+            return result -> assertMatch(JsonUtil.readValue(getContent(result), dto), expected);
         }
 
         @SafeVarargs
@@ -69,11 +75,11 @@ public class MatcherFactory {
         }
 
         public ResultMatcher contentJson(Iterable<T> expected) {
-            return result -> assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
+            return result -> assertMatch(JsonUtil.readValues(getContent(result), dto), expected);
         }
 
-        public T readFromJson(ResultActions action) throws UnsupportedEncodingException {
-            return JsonUtil.readValue(getContent(action.andReturn()), clazz);
+        public S readFromJson(ResultActions action) throws UnsupportedEncodingException {
+            return JsonUtil.readValue(getContent(action.andReturn()), dto);
         }
 
         private static String getContent(MvcResult result) throws UnsupportedEncodingException {

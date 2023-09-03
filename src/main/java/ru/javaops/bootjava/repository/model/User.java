@@ -30,13 +30,12 @@ public class User extends NamedEntity implements HasIdAndEmail {
     @Email
     @NotBlank
     @Size(max = 128)
-    @NoHtml   // https://stackoverflow.com/questions/17480809
+    @NoHtml
     private String email;
 
     @Column(name = "password", nullable = false)
     @NotBlank
     @Size(max = 128)
-    // https://stackoverflow.com/a/12505165/548473
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
@@ -62,8 +61,8 @@ public class User extends NamedEntity implements HasIdAndEmail {
         this(u.id, u.name, u.email, u.password, u.enabled, u.registered, u.roles);
     }
 
-    public User(UUID id, String name, String email, String password, Set<Role> roles) {
-        this(id, name, email, password, true, new Date(), roles);
+    public User(String name, String email, String password, Set<Role> roles) {
+        this(null, name, email, password, true, new Date(), roles);
     }
 
     public User(UUID id, String name, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {
