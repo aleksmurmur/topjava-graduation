@@ -62,8 +62,8 @@ public class DayMenuController {
 
     @Operation(summary = "Обновить меню")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public DayMenuResponse update(@Valid @RequestBody DayMenuCreateOrUpdateRequest request,
-                                               @PathVariable UUID id) {
+    public DayMenuResponse update(@PathVariable UUID id,
+                                  @Valid @RequestBody DayMenuCreateOrUpdateRequest request) {
         return service.update(request, id);
     }
 

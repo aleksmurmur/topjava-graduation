@@ -29,7 +29,7 @@ public class DayMenuUserController {
         this.service = service;
     }
 
-    @Operation(summary = "Получить список меню на текущую дату")
+    @Operation(summary = "Получить меню ресторанов на текущую дату")
     @GetMapping()
     public List<DayMenuResponse> getAll() {
         return service.getAll(LocalDate.now());

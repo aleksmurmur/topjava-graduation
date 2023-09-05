@@ -57,9 +57,10 @@ public class RestaurantController {
         return ResponseEntity.created(uri).body(response);
     }
 
+    @Operation(summary = "Обновить информацию о ресторане")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantResponse update(@Valid @RequestBody RestaurantCreateOrUpdateRequest request,
-                                                     @PathVariable UUID id) {
+    public RestaurantResponse update(@PathVariable UUID id,
+                                     @Valid @RequestBody RestaurantCreateOrUpdateRequest request) {
         return service.update(request, id);
     }
 

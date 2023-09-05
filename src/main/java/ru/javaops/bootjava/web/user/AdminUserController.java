@@ -1,5 +1,7 @@
 package ru.javaops.bootjava.web.user;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Пользователи")
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUserController {
@@ -32,22 +35,26 @@ public class AdminUserController {
         binder.addValidators(emailValidator);
     }
 
+    @Operation(description = "Получить пользователя по id")
     @GetMapping("/{id}")
     public UserResponse get(@PathVariable UUID id) {
         return service.get(id);
     }
 
+    @Operation(description = "Удалить пользователя по id")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
 
+    @Operation(description = "Получить всех пользователей")
     @GetMapping
     public List<UserResponse> getAll() {
         return service.findAll();
     }
 
+    @Operation(description = "Создать пользователя")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> createWithLocation(@Valid @RequestBody UserCreateOrUpdateRequest request) {
         UserResponse response = service.create(request);
@@ -55,16 +62,19 @@ public class AdminUserController {
         return ResponseEntity.created(uri).body(response);
     }
 
+    @Operation(description = "Обновить пользователя по id")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserResponse update(@Valid @RequestBody UserCreateOrUpdateRequest request, @PathVariable UUID id) {
+    public UserResponse update(@PathVariable UUID id, @Valid @RequestBody UserCreateOrUpdateRequest request) {
         return service.update(request, id);
     }
 
+    @Operation(description = "Получить пользователя по email")
     @GetMapping("/by-email")
     public UserResponse getByEmail(@RequestParam String email) {
         return service.getByEmail(email);
     }
 
+    @Operation(description = "Enable/disable user")
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void enable(@PathVariable UUID id, @RequestParam boolean enabled) {

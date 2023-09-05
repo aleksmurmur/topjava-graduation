@@ -59,8 +59,8 @@ public class MealController {
 
     @Operation(summary = "Обновить блюдо")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public MealResponse update(@Valid @RequestBody MealCreateOrUpdateRequest request,
-                                                     @PathVariable UUID id) {
+    public MealResponse update(@PathVariable UUID id,
+                               @Valid @RequestBody MealCreateOrUpdateRequest request) {
         return service.update(request, id);
     }
 
