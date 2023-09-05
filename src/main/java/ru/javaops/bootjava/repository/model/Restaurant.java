@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.javaops.bootjava.HasId;
+import ru.javaops.bootjava.to.RestaurantResponse;
 
 @Entity
 @Table(name = "restaurants")
@@ -17,5 +18,12 @@ public class Restaurant extends NamedEntity implements HasId {
 
     public Restaurant(String name) {
         super(null, name);
+    }
+
+    public RestaurantResponse toResponse() {
+        return new RestaurantResponse(
+                id(),
+                getName()
+        );
     }
 }

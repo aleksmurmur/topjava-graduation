@@ -4,17 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.util.CollectionUtils;
 import ru.javaops.bootjava.HasId;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.*;
 
 @Entity
 @Table(name = "day_menus")
@@ -23,16 +21,16 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DayMenu extends BaseEntity implements HasId {
 
-    @Column(name = "date", nullable = false, columnDefinition = "timestamp")
+    @Column(name = "date", nullable = false, columnDefinition = "date")
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Date date;
+    private LocalDate date;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "day_menus_meals",
             joinColumns = { @JoinColumn(name = "day_menu_id") },
             inverseJoinColumns = { @JoinColumn(name = "meal_id") })
-    @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Meal> meals;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,4 +39,23 @@ public class DayMenu extends BaseEntity implements HasId {
     @JsonIgnore
     @NotNull
     private Restaurant restaurant;
+
+    private int votesCounter;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Vote> votes;
+
+    public DayMenu(LocalDate date, Set<Meal> meals, Restaurant restaurant) {
+        this.date = date;
+        this.meals = meals;
+        this.restaurant = restaurant;
+        this.votesCounter = 0;
+        this.votes = Set.of();
+    }
+
+    public Boolean addVote(Vote vote) {
+        return this.votes.add(vote);
+    }
+
+
 }

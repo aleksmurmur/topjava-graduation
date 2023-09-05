@@ -26,7 +26,7 @@ public class RestaurantService {
         this.repository = repository;
     }
 
-    public RestaurantResponse get(@PathVariable UUID id) {
+    public RestaurantResponse get(UUID id) {
         log.info("get {}", id);
         Restaurant restaurant = repository.findByIdOrThrow(id);
         return toResponse(restaurant);
