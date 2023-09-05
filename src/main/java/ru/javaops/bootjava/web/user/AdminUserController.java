@@ -33,8 +33,8 @@ public class AdminUserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> get(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.get(id));
+    public UserResponse get(@PathVariable UUID id) {
+        return service.get(id);
     }
 
     @DeleteMapping("/{id}")
@@ -44,8 +44,8 @@ public class AdminUserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAll() {
-        return ResponseEntity.ok(service.findAll());
+    public List<UserResponse> getAll() {
+        return service.findAll();
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -56,13 +56,13 @@ public class AdminUserController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> update(@Valid @RequestBody UserCreateOrUpdateRequest request, @PathVariable UUID id) {
-        return ResponseEntity.ok(service.update(request, id));
+    public UserResponse update(@Valid @RequestBody UserCreateOrUpdateRequest request, @PathVariable UUID id) {
+        return service.update(request, id);
     }
 
     @GetMapping("/by-email")
-    public ResponseEntity<UserResponse> getByEmail(@RequestParam String email) {
-        return ResponseEntity.ok(service.getByEmail(email));
+    public UserResponse getByEmail(@RequestParam String email) {
+        return service.getByEmail(email);
     }
 
     @PatchMapping("/{id}")

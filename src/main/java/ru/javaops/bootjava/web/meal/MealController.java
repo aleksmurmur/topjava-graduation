@@ -35,8 +35,8 @@ public class MealController {
 
     @Operation(summary = "Получить блюдо по id")
     @GetMapping("/{id}")
-    public ResponseEntity<MealResponse> get(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.get(id));
+    public MealResponse get(@PathVariable UUID id) {
+        return service.get(id);
     }
 
     @Operation(summary = "Удалить блюдо по id")
@@ -48,8 +48,8 @@ public class MealController {
 
     @Operation(summary = "Получить список блюд")
     @GetMapping()
-    public ResponseEntity<List<MealResponse>> getAll(@RequestParam(required = false) UUID restaurantId) {
-        return ResponseEntity.ok(service.getAll(restaurantId));
+    public List<MealResponse> getAll(@RequestParam(required = false) UUID restaurantId) {
+        return service.getAll(restaurantId);
     }
 
 
@@ -63,10 +63,9 @@ public class MealController {
 
     @Operation(summary = "Обновить блюдо")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MealResponse> update(@Valid @RequestBody MealCreateOrUpdateRequest request,
+    public MealResponse update(@Valid @RequestBody MealCreateOrUpdateRequest request,
                                                      @PathVariable UUID id) {
-        MealResponse response = service.update(request, id);
-        return ResponseEntity.ok(response);
+        return service.update(request, id);
     }
 
 

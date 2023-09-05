@@ -31,13 +31,13 @@ public class DayMenuUserController {
 
     @Operation(summary = "Получить список меню на текущую дату")
     @GetMapping()
-    public ResponseEntity<List<DayMenuResponse>> getAll() {
-        return ResponseEntity.ok(service.getAll(LocalDate.now()));
+    public List<DayMenuResponse> getAll() {
+        return service.getAll(LocalDate.now());
     }
 
     @Operation(summary = "Проголосовать за меню")
     @PutMapping("/{dayMenuId}")
-    public ResponseEntity<DayMenuResponse> vote(@PathVariable UUID dayMenuId, @AuthenticationPrincipal AuthUser authUser) {
-        return ResponseEntity.ok(service.vote(dayMenuId, authUser));
+    public DayMenuResponse vote(@PathVariable UUID dayMenuId, @AuthenticationPrincipal AuthUser authUser) {
+        return service.vote(dayMenuId, authUser);
     }
 }

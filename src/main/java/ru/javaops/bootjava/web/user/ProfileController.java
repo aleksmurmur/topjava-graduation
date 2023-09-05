@@ -36,8 +36,8 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<UserResponse> get(@AuthenticationPrincipal AuthUser authUser) {
-        return ResponseEntity.ok(service.getCurrent(authUser));
+    public UserResponse get(@AuthenticationPrincipal AuthUser authUser) {
+        return service.getCurrent(authUser);
     }
 
     @DeleteMapping
@@ -57,8 +57,7 @@ public class ProfileController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
-    public ResponseEntity<UserResponse> update(@RequestBody @Valid UserCreateOrUpdateRequest request, @AuthenticationPrincipal AuthUser authUser) {
-        UserResponse response = service.update(request, authUser);
-        return ResponseEntity.ok(response);
+    public UserResponse update(@RequestBody @Valid UserCreateOrUpdateRequest request, @AuthenticationPrincipal AuthUser authUser) {
+        return service.update(request, authUser);
     }
 }

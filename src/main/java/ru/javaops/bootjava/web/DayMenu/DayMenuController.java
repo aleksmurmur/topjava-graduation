@@ -34,8 +34,8 @@ public class DayMenuController {
 
     @Operation(summary = "Получить меню по id")
     @GetMapping("/{id}")
-    public ResponseEntity<DayMenuResponse> get(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.get(id));
+    public DayMenuResponse get(@PathVariable UUID id) {
+        return service.get(id);
     }
 
     @Operation(summary = "Удалить меню по id")
@@ -47,8 +47,8 @@ public class DayMenuController {
 
     @Operation(summary = "Получить список меню")
     @GetMapping()
-    public ResponseEntity<List<DayMenuResponse>> getAll(@RequestParam LocalDate date) {
-        return ResponseEntity.ok(service.getAll(date));
+    public List<DayMenuResponse> getAll(@RequestParam LocalDate date) {
+        return service.getAll(date);
     }
 
 
@@ -62,10 +62,9 @@ public class DayMenuController {
 
     @Operation(summary = "Обновить меню")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DayMenuResponse> update(@Valid @RequestBody DayMenuCreateOrUpdateRequest request,
+    public DayMenuResponse update(@Valid @RequestBody DayMenuCreateOrUpdateRequest request,
                                                @PathVariable UUID id) {
-        DayMenuResponse response = service.update(request, id);
-        return ResponseEntity.ok(response);
+        return service.update(request, id);
     }
 
 }

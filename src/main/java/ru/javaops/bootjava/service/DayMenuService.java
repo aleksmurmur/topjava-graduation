@@ -38,7 +38,7 @@ public class DayMenuService {
         this.mealRepository = mealRepository;
         this.voteRepository = voteRepository;
     }
-    
+
     @Transactional(readOnly = true)
     public DayMenuResponse get(UUID id) {
         log.info("get {}", id);
