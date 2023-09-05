@@ -18,7 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUserController {
-    static final String REST_URL = "/api/admin/users";
+    static final String REST_URL = "/admin/api/v1/users";
 
     private final AdminUserService service;
     private final UniqueMailValidator emailValidator;

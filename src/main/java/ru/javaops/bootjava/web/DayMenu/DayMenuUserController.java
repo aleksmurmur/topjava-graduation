@@ -21,7 +21,7 @@ import static ru.javaops.bootjava.web.DayMenu.DayMenuUserController.REST_URL;
 @RestController
 @RequestMapping(value = REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class DayMenuUserController {
-    static final String REST_URL = "/api/day-menu";
+    static final String REST_URL = "/user/api/v1/day-menu";
 
     private final DayMenuService service;
 

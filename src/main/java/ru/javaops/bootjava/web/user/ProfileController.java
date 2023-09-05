@@ -21,7 +21,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileController {
-    static final String REST_URL = "/api/profile";
+    static final String REST_URL = "/user/api/v1/profile";
 
     private final ProfileService service;
     private final UniqueMailValidator emailValidator;

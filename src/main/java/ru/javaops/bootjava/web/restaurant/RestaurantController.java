@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantController {
 
-    static final String REST_URL = "/api/admin/restaurants";
+    static final String REST_URL = "/admin/api/v1/restaurants";
 
     private final RestaurantService service;
 

@@ -8,13 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.javaops.bootjava.service.MealService;
-import ru.javaops.bootjava.service.RestaurantService;
 import ru.javaops.bootjava.to.MealCreateOrUpdateRequest;
 import ru.javaops.bootjava.to.MealResponse;
-import ru.javaops.bootjava.to.RestaurantCreateOrUpdateRequest;
-import ru.javaops.bootjava.to.RestaurantResponse;
 import ru.javaops.bootjava.util.WebUtil;
-import ru.javaops.bootjava.web.restaurant.RestaurantController;
 
 import java.net.URI;
 import java.util.List;
@@ -24,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = MealController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealController {
-    static final String REST_URL = "/api/admin/meals";
+    static final String REST_URL = "/admin/api/v1/meals";
 
     private final MealService service;
 
