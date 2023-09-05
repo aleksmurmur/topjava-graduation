@@ -2,6 +2,7 @@ package ru.javaops.bootjava.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javaops.bootjava.repository.UserRepository;
 import ru.javaops.bootjava.repository.model.Role;
 import ru.javaops.bootjava.repository.model.User;
@@ -19,17 +20,20 @@ public class ProfileService extends AbstractUserService {
         super(repository);
     }
 
+    @Transactional(readOnly = true)
     public UserResponse getCurrent(AuthUser authUser) {
         log.info("get {}", authUser);
         return toResponse(authUser.getUser());
     }
 
+    @Transactional
     public UserResponse register(UserCreateOrUpdateRequest request) {
         log.info("register {}", request);
         User created = repository.save(request.toEntity(Set.of(Role.USER)));
         return toResponse(created);
     }
 
+    @Transactional
     public UserResponse update(UserCreateOrUpdateRequest request, AuthUser authUser) {
         log.info("update {} with id {}", request, authUser.id());
         User user = authUser.getUser();

@@ -21,19 +21,21 @@ public class AdminUserService extends AbstractUserService {
         super(repository);
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponse> findAll() {
         log.info("getAll");
         List<User> users = repository.findAll(Sort.by(Sort.Direction.ASC, "name", "email"));
         return users.stream().map(this::toResponse).toList();
     }
 
+    @Transactional
     public UserResponse create(UserCreateOrUpdateRequest request) {
         log.info("create {}", request);
         User created = repository.save(request.toEntity(request.roles()));
         return toResponse(created);
     }
 
-
+    @Transactional
     public UserResponse update(UserCreateOrUpdateRequest request, UUID id) {
         log.info("update {} with id={}", request, id);
         User user = repository.findById(id).orElseThrow(() -> new NotFoundException("User with id=" + id + " not found"));
@@ -41,6 +43,7 @@ public class AdminUserService extends AbstractUserService {
         return toResponse(updated);
     }
 
+    @Transactional(readOnly = true)
     public UserResponse getByEmail(String email) {
         log.info("getByEmail {}", email);
         User user = repository.getByEmail(email);

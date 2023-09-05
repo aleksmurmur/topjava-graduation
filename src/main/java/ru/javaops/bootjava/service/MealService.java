@@ -3,6 +3,7 @@ package ru.javaops.bootjava.service;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.javaops.bootjava.repository.MealRepository;
 import ru.javaops.bootjava.repository.RestaurantRepository;
@@ -32,12 +33,14 @@ public class MealService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    @Transactional(readOnly = true)
     public MealResponse get(@PathVariable UUID id) {
         log.info("get {}", id);
         Meal meal = repository.findByIdOrThrow(id);
         return toResponse(meal);
     }
 
+    @Transactional(readOnly = true)
     public List<MealResponse> getAll(UUID restaurantId) {
         log.info("getAll");
         List<Meal> meals;
@@ -51,10 +54,12 @@ public class MealService {
         return meals.stream().map(this::toResponse).toList();
     }
 
+    @Transactional
     public void delete(UUID id) {
         repository.deleteExisted(id);
     }
 
+    @Transactional
     public MealResponse create(MealCreateOrUpdateRequest request) {
         log.info("create {}", request);
 
@@ -62,6 +67,7 @@ public class MealService {
         return toResponse(created);
     }
 
+    @Transactional
     public MealResponse update(MealCreateOrUpdateRequest request, UUID id) {
         log.info("update {} with id={}", request, id);
 

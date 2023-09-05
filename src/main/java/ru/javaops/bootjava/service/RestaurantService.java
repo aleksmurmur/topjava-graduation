@@ -3,6 +3,7 @@ package ru.javaops.bootjava.service;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.javaops.bootjava.repository.RestaurantRepository;
 import ru.javaops.bootjava.repository.model.Restaurant;
@@ -26,22 +27,26 @@ public class RestaurantService {
         this.repository = repository;
     }
 
+    @Transactional(readOnly = true)
     public RestaurantResponse get(UUID id) {
         log.info("get {}", id);
         Restaurant restaurant = repository.findByIdOrThrow(id);
         return toResponse(restaurant);
     }
 
+    @Transactional(readOnly = true)
     public List<RestaurantResponse> getAll() {
         log.info("getAll");
         List<Restaurant> restaurants = repository.findAll(Sort.by(Sort.Direction.ASC, "name"));
         return restaurants.stream().map(this::toResponse).toList();
     }
 
+    @Transactional
     public void delete(UUID id) {
         repository.deleteExisted(id);
     }
 
+    @Transactional
     public RestaurantResponse create(RestaurantCreateOrUpdateRequest request) {
         log.info("create {}", request);
 
@@ -49,6 +54,7 @@ public class RestaurantService {
         return toResponse(created);
     }
 
+    @Transactional
     public RestaurantResponse update(RestaurantCreateOrUpdateRequest request, UUID id) {
         log.info("update {} with id={}", request, id);
 

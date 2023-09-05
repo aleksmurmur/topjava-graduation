@@ -92,17 +92,19 @@ public class DayMenuService {
 
     @Transactional
     public DayMenuResponse vote(UUID dayMenuId, AuthUser authUser) {
-        log.info("User {} voted for day menu {}", authUser.id(), dayMenuId);
+        log.info("User {} votes for day menu {}", authUser.id(), dayMenuId);
         User user = authUser.getUser();
         Vote vote = voteRepository.findByCreatedAndUser(LocalDate.now(), user).orElse(null);
         if (vote != null) {
             if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
                 throw new IllegalRequestDataException("It is not possible to revote after 11 A.M.");
             } else {
+                log.info("User {} changes vote from day menu {}", authUser.id(), vote.getDayMenu().id());
                 dayMenuRepository.decrementVotesCounter(vote.getDayMenu().id());
                 voteRepository.delete(vote);
             }
         }
+        //safely increment/decrement counters
         int updatedRows = dayMenuRepository.incrementVotesCounter(dayMenuId);
         if (updatedRows == 0) throw new NotFoundException("Day menu was not found by id " + dayMenuId);
         DayMenu dayMenu = dayMenuRepository.findByIdOrThrow(dayMenuId);

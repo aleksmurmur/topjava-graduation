@@ -12,7 +12,6 @@ import java.util.UUID;
 @NoRepositoryBean
 public interface BaseRepository<T> extends JpaRepository<T, UUID> {
 
-    @Transactional
     @Modifying
     @Query("DELETE FROM #{#entityName} e WHERE e.id=:id")
     int delete(UUID id);

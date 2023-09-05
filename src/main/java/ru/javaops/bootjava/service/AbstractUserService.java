@@ -1,6 +1,7 @@
 package ru.javaops.bootjava.service;
 
 import org.slf4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import ru.javaops.bootjava.repository.UserRepository;
@@ -27,12 +28,14 @@ public abstract class AbstractUserService {
         this.repository = repository;
     }
 
+    @Transactional(readOnly = true)
     public UserResponse get(UUID id) {
         log.info("get {}", id);
         User user = repository.findByIdOrThrow(id);
         return toResponse(user);
     }
 
+    @Transactional
     public void delete(UUID id) {
         log.info("delete {}", id);
         repository.deleteExisted(id);
