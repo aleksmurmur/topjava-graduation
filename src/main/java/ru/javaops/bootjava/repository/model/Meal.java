@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "meals")
+@Table(name = "meal")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -14,6 +14,7 @@ import ru.javaops.bootjava.HasId;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "vote")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

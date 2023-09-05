@@ -10,7 +10,7 @@ import ru.javaops.bootjava.HasId;
 import ru.javaops.bootjava.to.RestaurantResponse;
 
 @Entity
-@Table(name = "restaurants")
+@Table(name = "restaurant")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

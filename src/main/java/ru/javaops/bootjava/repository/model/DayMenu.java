@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Entity
-@Table(name = "day_menus")
+@Table(name = "day_menu")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,7 +27,7 @@ public class DayMenu extends BaseEntity implements HasId {
     private LocalDate menuDate;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "day_menus_meals",
+    @JoinTable(name = "day_menu_meal",
             joinColumns = { @JoinColumn(name = "day_menu_id") },
             inverseJoinColumns = { @JoinColumn(name = "meal_id") })
     @OnDelete(action = OnDeleteAction.CASCADE)
