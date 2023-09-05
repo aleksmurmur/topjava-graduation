@@ -21,10 +21,10 @@ import java.util.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DayMenu extends BaseEntity implements HasId {
 
-    @Column(name = "date", nullable = false, columnDefinition = "date")
+    @Column(name = "menu_date", nullable = false, columnDefinition = "date")
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDate date;
+    private LocalDate menuDate;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "day_menus_meals",
@@ -45,8 +45,8 @@ public class DayMenu extends BaseEntity implements HasId {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Vote> votes;
 
-    public DayMenu(LocalDate date, Set<Meal> meals, Restaurant restaurant) {
-        this.date = date;
+    public DayMenu(LocalDate menuDate, Set<Meal> meals, Restaurant restaurant) {
+        this.menuDate = menuDate;
         this.meals = meals;
         this.restaurant = restaurant;
         this.votesCounter = 0;

@@ -1,8 +1,6 @@
 package ru.javaops.bootjava.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javaops.bootjava.error.DataConflictException;
@@ -25,9 +23,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class DayMenuService {
-    //todo add daymenu crud + votes (admin+user api)
-    //todo add user api restaurants
-    //todo cache optimize so on as task
 
     private final Logger log = getLogger(getClass());
     private final DayMenuRepository dayMenuRepository;
@@ -70,7 +65,7 @@ public class DayMenuService {
     public DayMenuResponse create(DayMenuCreateOrUpdateRequest request) {
         log.info("create {}", request);
         Restaurant restaurant = restaurantRepository.findByIdOrThrow(request.restaurantId());
-        if (dayMenuRepository.existsByDateAndRestaurant(request.date(), restaurant)) {
+        if (dayMenuRepository.existsByMenuDateAndRestaurant(request.date(), restaurant)) {
             throw new DataConflictException(String.format("Restaurant %s already has menu on date %s",
                     restaurant.getName(), request.date()));
         }
@@ -139,7 +134,7 @@ public class DayMenuService {
     }
 
     private DayMenu updateEntity(DayMenu dayMenu, LocalDate date, List<Meal> meals, Restaurant restaurant) {
-        dayMenu.setDate(date);
+        dayMenu.setMenuDate(date);
         dayMenu.setMeals(Set.copyOf(meals));
         dayMenu.setRestaurant(restaurant);
         return dayMenu;
@@ -148,7 +143,7 @@ public class DayMenuService {
     private DayMenuResponse toResponse(DayMenu dm) {
         return new DayMenuResponse(
                 dm.id(),
-                dm.getDate(),
+                dm.getMenuDate(),
                 dm.getMeals().stream().map(m -> new MealResponse(m.id(), m.getName(), m.getPrice(), null)).collect(Collectors.toSet()),
                 dm.getRestaurant().toResponse(),
                 dm.getVotesCounter());

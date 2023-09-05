@@ -18,16 +18,13 @@ SELECT UUID(), 'Hamburger', 600, r.id FROM RESTAURANTS r WHERE r.name = 'Beverly
 INSERT INTO MEALS (id, name, price, restaurant_id)
 SELECT UUID(), 'Coffee', 250, r.id FROM RESTAURANTS r WHERE r.name = 'Beverly Hills';
 
-INSERT INTO DAY_MENUS (id, date, restaurant_id, votes_counter)
+INSERT INTO DAY_MENUS (id, menu_date, restaurant_id, votes_counter)
 SELECT UUID(), now(), r.id, 0 FROM RESTAURANTS r WHERE r.name = 'Beverly Hills';
-
--- INSERT INTO DAY_MENUS_MEALS (day_menu_id, meal_id)
--- SELECT dm.id, m.id FROM DAY_MENUS dm JOIN MEALS m on true;
 
 INSERT INTO RESTAURANTS (id, name)
 VALUES (UUID(), 'HellHole');
 
-INSERT INTO DAY_MENUS (id, date, restaurant_id, votes_counter)
+INSERT INTO DAY_MENUS (id, menu_date, restaurant_id, votes_counter)
 SELECT UUID(), now(), r.id, 0 FROM RESTAURANTS r WHERE r.name = 'HellHole';
 
 INSERT INTO DAY_MENUS_MEALS (day_menu_id, meal_id)
