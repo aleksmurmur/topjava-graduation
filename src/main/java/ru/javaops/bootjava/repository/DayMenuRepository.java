@@ -21,11 +21,11 @@ public interface DayMenuRepository extends BaseRepository<DayMenu>, JpaSpecifica
     List<DayMenu> getAllWithMealsByDate(LocalDate menuDate);
 
     @Modifying
-    @Query(value = "UPDATE day_menus dm set dm.votes_counter = dm.votes_counter + 1 WHERE dm.id = :id", nativeQuery = true)
+    @Query(value = "UPDATE day_menu dm set dm.votes_counter = dm.votes_counter + 1 WHERE dm.id = :id", nativeQuery = true)
     int incrementVotesCounter(UUID id);
 
     @Modifying
-    @Query(value = "UPDATE day_menus dm set dm.votes_counter = dm.votes_counter - 1 WHERE dm.id = :id", nativeQuery = true)
+    @Query(value = "UPDATE day_menu dm set dm.votes_counter = dm.votes_counter - 1 WHERE dm.id = :id", nativeQuery = true)
     int decrementVotesCounter(UUID id);
 
 

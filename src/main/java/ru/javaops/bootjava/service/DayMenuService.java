@@ -96,13 +96,7 @@ public class DayMenuService {
         User user = authUser.getUser();
         Vote vote = voteRepository.findByCreatedAndUser(LocalDate.now(), user).orElse(null);
         if (vote != null) {
-            if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
-                throw new IllegalRequestDataException("It is not possible to revote after 11 A.M.");
-            } else {
-                log.info("User {} changes vote from day menu {}", authUser.id(), vote.getDayMenu().id());
-                dayMenuRepository.decrementVotesCounter(vote.getDayMenu().id());
-                voteRepository.delete(vote);
-            }
+            decrementCounterIfPossible(vote, authUser);
         }
         //safely increment/decrement counters
         int updatedRows = dayMenuRepository.incrementVotesCounter(dayMenuId);
@@ -115,6 +109,16 @@ public class DayMenuService {
         );
         dayMenu.addVote(newVote);
         return toResponse(dayMenu);
+    }
+
+    private void decrementCounterIfPossible(Vote vote, AuthUser authUser) {
+        if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
+            throw new IllegalRequestDataException("It is not possible to revote after 11 A.M.");
+        } else {
+            log.info("User {} changes vote from day menu {}", authUser.id(), vote.getDayMenu().id());
+            dayMenuRepository.decrementVotesCounter(vote.getDayMenu().id());
+            voteRepository.delete(vote);
+        }
     }
 
     private void validateMeals(List<Meal> meals, Set<UUID> mealIds) {

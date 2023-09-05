@@ -1,4 +1,4 @@
-package ru.javaops.bootjava.web.DayMenu;
+package ru.javaops.bootjava.web.daymenu;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.javaops.bootjava.web.DayMenu.DayMenuController.REST_URL;
+import static ru.javaops.bootjava.web.daymenu.DayMenuController.REST_URL;
 
 @Tag(name = "Меню дня")
 @RestController

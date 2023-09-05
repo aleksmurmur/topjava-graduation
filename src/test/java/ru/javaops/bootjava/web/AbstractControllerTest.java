@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
+import ru.javaops.bootjava.repository.DayMenuRepository;
+import ru.javaops.bootjava.repository.MealRepository;
 import ru.javaops.bootjava.repository.RestaurantRepository;
 import ru.javaops.bootjava.repository.UserRepository;
 import ru.javaops.bootjava.repository.model.Role;
@@ -40,21 +42,26 @@ public abstract class AbstractControllerTest {
     protected User guest;
 
 
-
     @Autowired
     protected RestaurantRepository restaurantRepository;
 
     @Autowired
     protected UserRepository userRepository;
 
+    @Autowired
+    protected MealRepository mealRepository;
+    @Autowired
+    protected DayMenuRepository dayMenuRepository;
+
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
     }
 
     protected void cleanDb() {
-
         restaurantRepository.deleteAll();
         userRepository.deleteAll();
+        mealRepository.deleteAll();
+        dayMenuRepository.deleteAll();
     }
 
     public void setDefaultUsers(){

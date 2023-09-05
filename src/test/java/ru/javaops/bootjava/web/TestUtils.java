@@ -34,4 +34,8 @@ public class TestUtils {
         return roles;
     }
 
+    public static long randomPrice() {
+        return random.nextLong(0, Long.MAX_VALUE);
+    }
+
 }

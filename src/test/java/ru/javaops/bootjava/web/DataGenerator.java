@@ -1,15 +1,15 @@
 package ru.javaops.bootjava.web;
 
-import ru.javaops.bootjava.repository.model.Restaurant;
-import ru.javaops.bootjava.repository.model.Role;
-import ru.javaops.bootjava.repository.model.User;
-import ru.javaops.bootjava.to.RestaurantCreateOrUpdateRequest;
-import ru.javaops.bootjava.to.RestaurantResponse;
-import ru.javaops.bootjava.to.UserCreateOrUpdateRequest;
+import ru.javaops.bootjava.repository.model.*;
+import ru.javaops.bootjava.to.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
+
+import static ru.javaops.bootjava.web.TestUtils.*;
 
 public class DataGenerator {
 
@@ -25,13 +25,13 @@ public class DataGenerator {
     }
     public static RestaurantCreateOrUpdateRequest restaurantCreateOrUpdateRequest() {
         return new RestaurantCreateOrUpdateRequest(
-                TestUtils.randomString()
+                randomString()
         );
     }
 
     public static Restaurant restaurant() {
         return new Restaurant(
-                TestUtils.randomString()
+                randomString()
         );
     }
     public static UserCreateOrUpdateRequest userCreateOrUpdateRequest() {
@@ -40,22 +40,48 @@ public class DataGenerator {
 
     public static UserCreateOrUpdateRequest userCreateOrUpdateRequest(String email) {
         return new UserCreateOrUpdateRequest(
-                TestUtils.randomString(),
+                randomString(),
                 email,
-                TestUtils.randomString()
+                randomString()
         );
     }
 
     public static User user() {
         return new User(
                 null,
-                TestUtils.randomString(),
-                TestUtils.randomEmail(),
-                TestUtils.randomString(),
+                randomString(),
+                randomEmail(),
+                randomString(),
                 new Random().nextBoolean(),
                 new Date(),
-                TestUtils.randomRoles()
+                randomRoles()
         );
     }
+
+    public static MealCreateOrUpdateRequest mealCreateOrUpdateRequest(UUID restaurantId) {
+        return new MealCreateOrUpdateRequest(
+                randomString(),
+                randomPrice(),
+                restaurantId
+        );
+    }
+
+    public static Meal meal(Restaurant restaurant) {
+        return new Meal(
+                randomString(),
+                randomPrice(),
+                restaurant
+        );
+    }
+
+    public static DayMenuCreateOrUpdateRequest dayMenuCreateOrUpdateRequest(Set<UUID> mealIds, UUID restaurantId) {
+        return new DayMenuCreateOrUpdateRequest(
+                LocalDate.now().plusDays(new Random().nextInt(0, 10)),
+                mealIds,
+                restaurantId
+        );
+    }
+
+
 
 }

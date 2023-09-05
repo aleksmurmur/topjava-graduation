@@ -203,7 +203,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_EMAIL, setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void updateDuplicate() throws Exception {
         UserCreateOrUpdateRequest invalidRequest = new UserCreateOrUpdateRequest( user1.getName(), ADMIN_EMAIL, user1.getPassword(), user1.getRoles());
-        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + user1)
+        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + user1.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invalidRequest)))
                 .andDo(print())

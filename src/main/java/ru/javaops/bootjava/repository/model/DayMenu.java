@@ -50,7 +50,7 @@ public class DayMenu extends BaseEntity implements HasId {
         this.meals = meals;
         this.restaurant = restaurant;
         this.votesCounter = 0;
-        this.votes = Set.of();
+        this.votes = new HashSet<>();
     }
 
     public Boolean addVote(Vote vote) {

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public record DayMenuResponse(
         UUID id,
-        LocalDate date,
+        LocalDate menuDate,
         Set<MealResponse> meals,
         RestaurantResponse restaurant,
         int votes
