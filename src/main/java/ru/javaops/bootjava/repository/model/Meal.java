@@ -1,19 +1,18 @@
 package ru.javaops.bootjava.repository.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.OnDeleteAction;
 import ru.javaops.bootjava.HasId;
 
-import java.util.Date;
-import java.util.UUID;
 
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Entity
 @Table(name = "meal")
 @Getter

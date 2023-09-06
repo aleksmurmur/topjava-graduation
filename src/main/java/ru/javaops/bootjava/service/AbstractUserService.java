@@ -1,15 +1,13 @@
 package ru.javaops.bootjava.service;
 
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import ru.javaops.bootjava.repository.UserRepository;
 import ru.javaops.bootjava.repository.model.Role;
 import ru.javaops.bootjava.repository.model.User;
 import ru.javaops.bootjava.to.UserCreateOrUpdateRequest;
 import ru.javaops.bootjava.to.UserResponse;
-import ru.javaops.bootjava.web.user.UniqueMailValidator;
 
 import java.util.Set;
 import java.util.UUID;
@@ -35,6 +33,7 @@ public abstract class AbstractUserService {
         return toResponse(user);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public void delete(UUID id) {
         log.info("delete {}", id);

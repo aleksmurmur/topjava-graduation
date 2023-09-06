@@ -1,10 +1,11 @@
 package ru.javaops.bootjava.service;
 
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.javaops.bootjava.repository.RestaurantRepository;
 import ru.javaops.bootjava.repository.model.Restaurant;
 import ru.javaops.bootjava.to.RestaurantCreateOrUpdateRequest;
@@ -34,6 +35,7 @@ public class RestaurantService {
         return toResponse(restaurant);
     }
 
+    @Cacheable("restaurant")
     @Transactional(readOnly = true)
     public List<RestaurantResponse> getAll() {
         log.info("getAll");
@@ -41,11 +43,13 @@ public class RestaurantService {
         return restaurants.stream().map(this::toResponse).toList();
     }
 
+    @CacheEvict(value = "restaurant", allEntries = true)
     @Transactional
     public void delete(UUID id) {
         repository.deleteExisted(id);
     }
 
+    @CacheEvict(value = "restaurant", allEntries = true)
     @Transactional
     public RestaurantResponse create(RestaurantCreateOrUpdateRequest request) {
         log.info("create {}", request);
@@ -54,6 +58,7 @@ public class RestaurantService {
         return toResponse(created);
     }
 
+    @CacheEvict(value = "restaurant", allEntries = true)
     @Transactional
     public RestaurantResponse update(RestaurantCreateOrUpdateRequest request, UUID id) {
         log.info("update {} with id={}", request, id);

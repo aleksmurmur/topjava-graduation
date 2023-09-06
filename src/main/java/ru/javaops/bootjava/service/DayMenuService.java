@@ -94,20 +94,14 @@ public class DayMenuService {
     public DayMenuResponse vote(UUID dayMenuId, AuthUser authUser) {
         log.info("User {} votes for day menu {}", authUser.id(), dayMenuId);
         User user = authUser.getUser();
-        Vote vote = voteRepository.findByCreatedAndUser(LocalDate.now(), user).orElse(null);
-        if (vote != null) {
-            decrementCounterIfPossible(vote, authUser);
-        }
+        voteRepository.findByCreatedAndUser(LocalDate.now(), user)
+                .ifPresent(vote -> decrementCounterIfPossible(vote, authUser));
         //safely increment/decrement counters
         int updatedRows = dayMenuRepository.incrementVotesCounter(dayMenuId);
         if (updatedRows == 0) throw new NotFoundException("Day menu was not found by id " + dayMenuId);
         DayMenu dayMenu = dayMenuRepository.findByIdOrThrow(dayMenuId);
 
-        Vote newVote = new Vote(
-                dayMenu,
-                user
-        );
-        dayMenu.addVote(newVote);
+        dayMenu.addVote(new Vote(dayMenu, user));
         return toResponse(dayMenu);
     }
 
@@ -115,7 +109,7 @@ public class DayMenuService {
         if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
             throw new IllegalRequestDataException("It is not possible to revote after 11 A.M.");
         } else {
-            log.info("User {} changes vote from day menu {}", authUser.id(), vote.getDayMenu().id());
+            log.info("User {} changed vote", authUser.id());
             dayMenuRepository.decrementVotesCounter(vote.getDayMenu().id());
             voteRepository.delete(vote);
         }
@@ -128,7 +122,6 @@ public class DayMenuService {
             throw new NotFoundException(String.format("Meal(s) with id(s) %s not found",
                     mealIds.stream().map(UUID::toString).collect(Collectors.joining(", "))));
         }
-
     }
 
     private DayMenu toEntity(LocalDate date, List<Meal> meals, Restaurant restaurant) {

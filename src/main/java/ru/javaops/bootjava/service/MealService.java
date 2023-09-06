@@ -1,6 +1,8 @@
 package ru.javaops.bootjava.service;
 
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +15,6 @@ import ru.javaops.bootjava.to.MealCreateOrUpdateRequest;
 import ru.javaops.bootjava.to.MealResponse;
 import ru.javaops.bootjava.to.NamedElement;
 
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +40,7 @@ public class MealService {
         return toResponse(meal);
     }
 
+    @Cacheable("meal")
     @Transactional(readOnly = true)
     public List<MealResponse> getAll(UUID restaurantId) {
         log.info("getAll");
@@ -54,19 +55,21 @@ public class MealService {
         return meals.stream().map(this::toResponse).toList();
     }
 
+    @CacheEvict(value = "meal", allEntries = true)
     @Transactional
     public void delete(UUID id) {
         repository.deleteExisted(id);
     }
 
+    @CacheEvict(value = "meal", allEntries = true)
     @Transactional
     public MealResponse create(MealCreateOrUpdateRequest request) {
         log.info("create {}", request);
-
         Meal created = repository.save(toEntity(request));
         return toResponse(created);
     }
 
+    @CacheEvict(value = "meal", allEntries = true)
     @Transactional
     public MealResponse update(MealCreateOrUpdateRequest request, UUID id) {
         log.info("update {} with id={}", request, id);

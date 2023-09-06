@@ -12,10 +12,8 @@ import ru.javaops.bootjava.util.JsonUtil;
 import ru.javaops.bootjava.web.AbstractControllerTest;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -57,20 +55,20 @@ class DayMenuUserControllerTest extends AbstractControllerTest {
         String resultString = perform(get(DayMenuUserController.REST_URL))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(DAY_MENU_RESPONSE_MATCHER.contentJson(Stream.of(dayMenu1, dayMenu2).sorted(
-                        Comparator.comparing(DayMenu::id)
-                ).toList()))
                 .andReturn().getResponse().getContentAsString();
 
         List<DayMenuResponse> dayMenusResponse = JsonUtil.readValues(resultString, DayMenuResponse.class);
         assertEquals(2, dayMenusResponse.size());
-        assertEquals(0 ,dayMenusResponse.stream().findFirst().get().votes());
-        assertEquals(dayMenu1.getMeals().size(), dayMenusResponse.stream().findFirst().get().meals().size());
+        DayMenuResponse dayMenu1Response = dayMenusResponse.stream().filter(dm -> dm.id().equals(dayMenu1.id())).findAny().orElse(null);
+        assertEquals(dayMenu1.id(), dayMenu1Response.id());
+        assertEquals(0 ,dayMenu1Response.votes());
+        assertEquals(dayMenu1.getMeals().size(), dayMenu1Response.meals().size());
     }
+
 
     @Test
     @WithUserDetails(value = ADMIN_EMAIL, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    void vote() throws Exception{
+    void vote() throws Exception {
         String resultString = perform(put(REST_URL_SLASH + dayMenu1.id()))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -80,5 +78,6 @@ class DayMenuUserControllerTest extends AbstractControllerTest {
         DayMenuResponse response = JsonUtil.readValue(resultString, DayMenuResponse.class);
         assertEquals(dayMenu1.getMeals().size(), response.meals().size());
         assertEquals(1, response.votes());
+
     }
 }

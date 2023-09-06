@@ -7,15 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.util.CollectionUtils;
 import ru.javaops.bootjava.HasId;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
 @Entity
-@Table(name = "day_menu")
+@Table(name = "day_menu", indexes = @Index(name = "idx_name", columnList = "menu_date", unique = false))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,9 +38,10 @@ public class DayMenu extends BaseEntity implements HasId {
     @NotNull
     private Restaurant restaurant;
 
+    @Column(name = "votes_counter", nullable = false)
     private int votesCounter;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Vote> votes;
 
     public DayMenu(LocalDate menuDate, Set<Meal> meals, Restaurant restaurant) {

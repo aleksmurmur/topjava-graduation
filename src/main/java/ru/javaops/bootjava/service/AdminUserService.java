@@ -1,6 +1,8 @@
 package ru.javaops.bootjava.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +11,6 @@ import ru.javaops.bootjava.repository.UserRepository;
 import ru.javaops.bootjava.repository.model.User;
 import ru.javaops.bootjava.to.UserCreateOrUpdateRequest;
 import ru.javaops.bootjava.to.UserResponse;
-import ru.javaops.bootjava.web.user.UniqueMailValidator;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class AdminUserService extends AbstractUserService {
         super(repository);
     }
 
+    @Cacheable("users")
     @Transactional(readOnly = true)
     public List<UserResponse> findAll() {
         log.info("getAll");
@@ -28,6 +30,7 @@ public class AdminUserService extends AbstractUserService {
         return users.stream().map(this::toResponse).toList();
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public UserResponse create(UserCreateOrUpdateRequest request) {
         log.info("create {}", request);
@@ -35,6 +38,7 @@ public class AdminUserService extends AbstractUserService {
         return toResponse(created);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public UserResponse update(UserCreateOrUpdateRequest request, UUID id) {
         log.info("update {} with id={}", request, id);
@@ -50,6 +54,7 @@ public class AdminUserService extends AbstractUserService {
         return toResponse(user);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public void enable(UUID id, boolean enabled) {
         log.info(enabled ? "enable {}" : "disable {}", id);

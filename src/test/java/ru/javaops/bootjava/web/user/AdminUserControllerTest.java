@@ -148,9 +148,9 @@ class AdminUserControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_RESPONSE_MATCHER.contentJson(Stream.of(admin, guest, user1).sorted(
-                        Comparator.comparing(User::getName)
-                ).toList()));
+                .andExpect(USER_RESPONSE_MATCHER.contentJson(Stream.of(admin, guest, user1)
+                        .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
+                        .toList()));
     }
 
     @Test

@@ -78,7 +78,7 @@ class MealControllerTest extends AbstractControllerTest {
         perform(get(MealController.REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(MEAL_RESPONSE_MATCHER.contentJson(Stream.of(meal1, meal2).sorted(
-                        Comparator.comparing(Meal::id)
+                        Comparator.comparing(Meal::getName)
                 ).toList()));
     }
 

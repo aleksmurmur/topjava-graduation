@@ -14,7 +14,7 @@ import ru.javaops.bootjava.HasId;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "vote")
+@Table(name = "vote", indexes = {@Index(name = "idx_created_user_id_unq", columnList = "created, user_id", unique = true)})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
