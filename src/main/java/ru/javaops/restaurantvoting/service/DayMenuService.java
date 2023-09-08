@@ -71,7 +71,7 @@ public class DayMenuService {
         }
         List<Meal> meals = mealRepository.findAllById(request.mealIds());
 
-        validateMeals(meals, request.mealIds());
+        validateMeals(meals, request.mealIds(), restaurant.id());
 
         DayMenu created = dayMenuRepository.save(toEntity(request.date(), meals, restaurant));
         return toResponse(created);
@@ -85,7 +85,7 @@ public class DayMenuService {
         Restaurant restaurant = restaurantRepository.findByIdOrThrow(request.restaurantId());
         List<Meal> meals = mealRepository.findAllById(request.mealIds());
 
-        validateMeals(meals, request.mealIds());
+        validateMeals(meals, request.mealIds(), restaurant.id());
         DayMenu updated = dayMenuRepository.save(updateEntity(dayMenu, request.date(), meals, restaurant));
         return toResponse(updated);
     }
@@ -115,13 +115,17 @@ public class DayMenuService {
         }
     }
 
-    private void validateMeals(List<Meal> meals, Set<UUID> mealIds) {
+    private void validateMeals(List<Meal> meals, Set<UUID> mealIds, UUID restaurantId) {
         Set<UUID> foundIds = meals.stream().map(Meal::id).collect(Collectors.toSet());
         mealIds.removeAll(foundIds);
         if (!mealIds.isEmpty()) {
             throw new NotFoundException(String.format("Meal(s) with id(s) %s not found",
                     mealIds.stream().map(UUID::toString).collect(Collectors.joining(", "))));
         }
+
+        Set<UUID> restaurantIdsFromRequest = meals.stream().map(m -> m.getRestaurant().id()).collect(Collectors.toSet());
+        restaurantIdsFromRequest.remove(restaurantId);
+        if (restaurantIdsFromRequest.size() > 0) throw new IllegalRequestDataException("Unable to add meal from the other restaurant");
     }
 
     private DayMenu toEntity(LocalDate date, List<Meal> meals, Restaurant restaurant) {

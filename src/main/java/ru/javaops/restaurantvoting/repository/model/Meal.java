@@ -34,4 +34,14 @@ public class Meal extends NamedEntity implements HasId {
         this.price = price;
         this.restaurant = restaurant;
     }
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "id=" + id +
+                ", name=" + name +
+                ", price=" + price +
+                ", restaurant=" + restaurant +
+                '}';
+    }
 }

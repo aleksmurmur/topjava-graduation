@@ -29,4 +29,12 @@ public class Restaurant extends NamedEntity implements HasId {
                 getName()
         );
     }
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "id=" + id +
+                ", name=" + name +
+                '}';
+    }
 }

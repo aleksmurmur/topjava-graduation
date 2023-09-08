@@ -43,10 +43,8 @@ public class RestExceptionHandler {
     @Getter
     private final MessageSource messageSource;
 
-    //    https://stackoverflow.com/a/52254601/548473
     static final Map<Class<? extends Throwable>, ErrorType> HTTP_STATUS_MAP = new LinkedHashMap<>() {
         {
-// more specific first
             put(NotFoundException.class, NOT_FOUND);
             put(FileNotFoundException.class, NOT_FOUND);
             put(NoHandlerFoundException.class, NOT_FOUND);

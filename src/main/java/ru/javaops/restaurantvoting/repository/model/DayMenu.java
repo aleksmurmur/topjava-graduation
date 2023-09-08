@@ -57,5 +57,16 @@ public class DayMenu extends BaseEntity implements HasId {
         return this.votes.add(vote);
     }
 
+    @Override
+    public String toString() {
+        return "DayMenu{" +
+                "id=" + id +
+                ", menuDate=" + menuDate +
+                ", meals=" + meals +
+                ", restaurant=" + restaurant +
+                ", votesCounter=" + votesCounter +
+                '}';
+    }
+
 
 }
