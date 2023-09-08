@@ -41,7 +41,8 @@ public class DayMenu extends BaseEntity implements HasId {
     @Column(name = "votes_counter", nullable = false)
     private int votesCounter;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dayMenu")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Vote> votes;
 
     public DayMenu(LocalDate menuDate, Set<Meal> meals, Restaurant restaurant) {

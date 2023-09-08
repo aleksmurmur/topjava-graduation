@@ -47,7 +47,7 @@ public class DayMenuController {
 
     @Operation(summary = "Get list of day menus")
     @GetMapping()
-    public List<DayMenuResponse> getAll(@RequestParam LocalDate date) {
+    public List<DayMenuResponse> getAll(@RequestParam(required = false) LocalDate date) {
         return service.getAll(date);
     }
 
